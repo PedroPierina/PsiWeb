@@ -32,14 +32,13 @@ public class UserController {
 		paciente.setName(formData.getName());
 		paciente.setPasswordHash(new BCryptPasswordEncoder().encode(formData.getPassword()));
 		paciente.setSpecialty(formData.getSpecialty());
-		pacienteRepository.save(paciente);
 		
+		pacienteRepository.save(paciente);
 		return "feed";
 	}
 	
 	@PostMapping("/registerProfessional")
 	public String saveProfissional(@ModelAttribute("Profissional") Profissional formData, Model model) {
-		System.out.println("Entrou");
 		profissional.setBirthDate(formData.getBirthDate());
 		profissional.setEmail(formData.getEmail());
 		profissional.setGender(formData.getGender());
@@ -49,8 +48,6 @@ public class UserController {
 		profissional.setPasswordHash(new BCryptPasswordEncoder().encode(formData.getPassword()));
 		profissional.setPreco(formData.getPreco());
 		profissional.setSpecialty(formData.getSpecialty());
-		
-		System.out.println(profissional);
 		
 		profissionalRepository.save(profissional);
 		return "feed";
