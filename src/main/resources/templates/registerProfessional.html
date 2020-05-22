@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+    <head>
+        <meta charset="utf-8">
+        <title>Registrar Profissional</title>
+        <link href="css/" rel="stylesheet" />
+    </head>
+    <body>
+        <form class="box" th:action="@{/registerProfessional}" method="post">
+        <h1>Registrar Profissional</h1>
+            <div><label><input type="email" name="email" placeholder="Email"/></label></div>
+            <div><label><input type="password" name="password" placeholder="Password"/> </label></div>
+            <div><label><input type="name" name="name" placeholder="Name"/> </label></div>
+            <div><label><input type="lastName" name="lastName" placeholder="Last Name"/> </label></div>
+
+            <div>
+                <label></label>
+                <select id="genero" name="genero">
+                    <option value="" selected disabled hidden>Selecione Genero</option>
+                    <option value="Homem">Homem</option>
+                    <option value="Mulher">Mulher</option>
+                    <option value="Outro">Outro</option>
+                  </select>
+            
+            </div>
+            
+            <div><label>Data de Nascimento:</br> <input type="date" name="birthday" placeholder="Data de Nascimento"/></label></div>
+            <div><label><input type="text" name="location" placeholder="Localização"/> </label></div>
+
+            <div>
+                <label>Preço </label>
+                <input type="radio" id="preco1" name="preco" value="1">
+                <label for="male">1</label>
+                <input type="radio" id="preco2" name="preco" value="2">
+                <label for="female">2</label>
+                <input type="radio" id="preco3" name="preco" value="3">
+                <label for="male">3</label>
+                <input type="radio" id="preco4" name="preco" value="4">
+                <label for="female">4</label>
+                <input type="radio" id="preco5" name="preco" value="5">
+                <label for="male">5</label>
+                
+                
+            </div>
+
+            <div><label><input type="text" name="specialty" placeholder="especialidade"/> </label></div>
+            <div><input type="submit" value="Register"/></div>
+        </form>
+    </body>
+</html>

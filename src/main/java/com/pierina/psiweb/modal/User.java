@@ -1,15 +1,16 @@
-package com.pierina.psiweb.user;
+package com.pierina.psiweb.modal;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.MappedSuperclass;
 import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
 
-@Entity
-@Table(name = "user")
-public class user {
+
+public class User {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -22,6 +23,10 @@ public class user {
 	@NotEmpty(message = "Tipo do ususario eh um campo obrigatorio")
 	private String type;
 	
+	private String name;
+	private String lastName;
+	private String gender;
+	private String birthDate;
 	
 	public String getUserName() {
 		return userName;
@@ -40,5 +45,29 @@ public class user {
 	}
 	public void setPasswordHash(String passwordHash) {
 		this.passwordHash = passwordHash;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public String getLastName() {
+		return lastName;
+	}
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
+	public String getGender() {
+		return gender;
+	}
+	public void setGender(String gender) {
+		this.gender = gender;
+	}
+	public String getBirthDate() {
+		return birthDate;
+	}
+	public void setBirthDate(String birthDate) {
+		this.birthDate = birthDate;
 	}
 }

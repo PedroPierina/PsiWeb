@@ -25,9 +25,18 @@ public class ViewController {
     	return "login";
 	}
     
-//    @RequestMapping("/feed")
-//    public String feedPage(){
-//    	return "feed";
-//	}
+    @RequestMapping("/registerPatient")
+    public String registerPatientPage(){
+    	return "registerPatient";
+	}
     
+    @RequestMapping("/registerProfessional")
+    public String registerProfessionalPage(){
+    	return "registerProfessional";
+	}
+    
+    @RequestMapping("/feed")
+    public String feedPage() {
+    	return "feed";
+    }
 }
