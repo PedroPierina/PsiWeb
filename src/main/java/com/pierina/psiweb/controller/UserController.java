@@ -1,5 +1,7 @@
 package com.pierina.psiweb.controller;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -22,6 +24,7 @@ public class UserController {
 	
 	Paciente paciente =  new Paciente();
 	Profissional profissional = new Profissional();
+	boolean logado = false;
 	
 	@PostMapping("/registerPatient")
 	public String savePaciente(@ModelAttribute("Paciente") Paciente formData,Model model) {
@@ -51,5 +54,36 @@ public class UserController {
 		
 		profissionalRepository.save(profissional);
 		return "feed";
+	}
+	
+	@PostMapping("/login")
+	public String validarUser(String username, String password) {
+		
+		Optional<Profissional> userFound = profissionalRepository.findByEmail(username);
+		
+		
+		if (userFound.isPresent()) {
+			if (new BCryptPasswordEncoder().matches(password, userFound.get().getPasswordHash())) {
+				logado = true;
+				return "feed";
+			}else {
+				return"login";
+			}
+			
+		}else {
+			Optional<Paciente> pacienteFound = pacienteRepository.findByEmail(username);
+			
+			if (pacienteFound.isPresent()) {
+				if (new BCryptPasswordEncoder().matches(password, pacienteFound.get().getPasswordHash())) {
+					logado = true;
+					return "feed";
+				}else {
+					return"login";
+				}
+			}else {
+				return"login";
+			}
+		}
+		
 	}
 }
