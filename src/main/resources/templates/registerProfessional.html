@@ -4,7 +4,7 @@
     <head>
         <meta charset="utf-8">
         <title>Registrar Profissional</title>
-        <link href="css/" rel="stylesheet" />
+        <link href="css/registerProStyle.css" rel="stylesheet" />
     </head>
     <body>
         <form class="box" th:action="@{/registerProfessional}" method="post">
@@ -16,7 +16,7 @@
 
             <div>
                 <label></label>
-                <select id="genero" name="genero">
+                <select id="gender" name="gender">
                     <option value="" selected disabled hidden>Selecione Genero</option>
                     <option value="Homem">Homem</option>
                     <option value="Mulher">Mulher</option>
@@ -25,21 +25,16 @@
             
             </div>
             
-            <div><label>Data de Nascimento:</br> <input type="date" name="birthday" placeholder="Data de Nascimento"/></label></div>
-            <div><label><input type="text" name="location" placeholder="Localização"/> </label></div>
+            <div><label>Data de Nascimento:</br> <input type="date" name="birthDate" placeholder="Data de Nascimento"/></label></div>
+            <div><label><input type="text" name="localizacao" placeholder="Localização"/> </label></div>
 
             <div>
                 <label>Preço </label>
-                <input type="radio" id="preco1" name="preco" value="1">
-                <label for="male">1</label>
-                <input type="radio" id="preco2" name="preco" value="2">
-                <label for="female">2</label>
-                <input type="radio" id="preco3" name="preco" value="3">
-                <label for="male">3</label>
-                <input type="radio" id="preco4" name="preco" value="4">
-                <label for="female">4</label>
-                <input type="radio" id="preco5" name="preco" value="5">
-                <label for="male">5</label>
+               	<label class="radio-inline" for="male"> <input type="radio" id="preco1" name="preco" value="1"> 1</label>
+                <label class="radio-inline" for="female"> <input type="radio" id="preco2" name="preco" value="2">2</label>
+                <label class="radio-inline" for="male"> <input type="radio" id="preco3" name="preco" value="3">3</label>
+                <label class="radio-inline" for="female"><input type="radio" id="preco4" name="preco" value="4">4</label>
+               	<label class="radio-inline" for="male"> <input type="radio" id="preco5" name="preco" value="5">5</label>
                 
                 
             </div>
