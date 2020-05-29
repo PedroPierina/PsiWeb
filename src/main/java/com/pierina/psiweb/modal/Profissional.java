@@ -1,5 +1,6 @@
 package com.pierina.psiweb.modal;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -12,6 +13,7 @@ import javax.validation.constraints.NotEmpty;
 public class Profissional {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name = "profissional_id")
 	private int id;
 	
 	@NotEmpty(message = "Email do ususario eh um campo obrigatorio")

@@ -1,5 +1,6 @@
 package com.pierina.psiweb.modal;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -7,13 +8,13 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
 
-import org.hibernate.annotations.GenericGenerator;
 
 @Entity
 @Table(name = "paciente")
 public class Paciente {	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name = "paciente_id")
 	private int id;
 	
 	@NotEmpty(message = "Email do ususario eh um campo obrigatorio")

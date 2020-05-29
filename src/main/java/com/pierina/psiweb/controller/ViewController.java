@@ -35,8 +35,4 @@ public class ViewController {
     	return "registerProfessional";
 	}
     
-    @RequestMapping("/feed")
-    public String feedPage() {
-    	return "feed";
-    }
 }

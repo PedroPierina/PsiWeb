@@ -59,3 +59,28 @@ body{
 .box input[type = "submit"]:hover{
     background: #2ecc71; 
 }
+
+.navbar-brand {
+	display: inline-block;
+	padding-top: 0.3125rem;
+	padding-bottom: 0.3125rem;
+	margin-right: 1rem;
+	font-size: 1.25rem;
+	line-height: inherit;
+	white-space: nowrap;
+	color:#2ecc71;
+  	left: 80%;
+  	text-decoration: none;
+  	background-color: transparent;
+  	box-sizing: border-box;
+  	text-align: center;
+  	text-shadow: none;
+}
+.navbar-brand:hover, .navbar-brand:focus {
+  text-decoration: none;
+}
+
+.barName{
+	color:#2ecc71;
+	left: 50%;
+}
