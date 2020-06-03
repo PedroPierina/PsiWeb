@@ -87,7 +87,11 @@ public class Post {
 	public void setComments(Collection<Comment> comments) {
 		this.comments = comments;
 	}
-	
-	
+
+	@Override
+	public String toString() {
+		return "Post [id=" + id + ", title=" + title + ", body=" + body + ", creatDate=" + creatDate + ", userEmail="
+				+ userEmail + ", comments=" + comments + "]";
+	}
 	
 }
