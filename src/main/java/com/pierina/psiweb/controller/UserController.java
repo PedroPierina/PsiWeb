@@ -1,5 +1,10 @@
 package com.pierina.psiweb.controller;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.Period;
+import java.util.Date;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -91,13 +96,15 @@ public class UserController {
 	}
 	
 	@PostMapping("/login")
-	public String validarUser(String username, String password) {
+	public String validarUser(String username, String password) throws ParseException {
 		Optional<Profissional> userFound = profissionalRepository.findByEmail(username);
 		String name = new String();
 		
 		if (userFound.isPresent()) {
 			if (new BCryptPasswordEncoder().matches(password, userFound.get().getPasswordHash())) {
 				name = userFound.get().getName() + " " + userFound.get().getLastName();
+				LocalDate birthDate = LocalDate.parse(userFound.get().getBirthDate());
+				Period idadeCompleta = Period.between(birthDate, LocalDate.now());
 				
 				user.setLogado(true);
 				user.setUserEmail(username);
@@ -105,6 +112,8 @@ public class UserController {
 				user.setName(name);
 				user.setLocalizacao(userFound.get().getLocalizacao());
 				user.setSpecialty(userFound.get().getSpecialty());
+				user.setIdade(idadeCompleta.getYears());
+				
 				
 				return "feed";
 			}else {

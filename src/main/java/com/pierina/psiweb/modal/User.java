@@ -9,6 +9,7 @@ public class User {
 	private String gender;
 	private String localizacao;
 	private String specialty;
+	private int idade;
 
 	
 	
@@ -47,6 +48,12 @@ public class User {
 	}
 	public void setSpecialty(String specialty) {
 		this.specialty = specialty;
+	}
+	public int getIdade() {
+		return idade;
+	}
+	public void setIdade(int idade) {
+		this.idade = idade;
 	}
 	
 	
