@@ -1,5 +1,6 @@
 package com.pierina.psiweb.modal;
 
+import javax.persistence.Lob;
 
 public class User {
 	
@@ -10,9 +11,15 @@ public class User {
 	private String localizacao;
 	private String specialty;
 	private int idade;
-
+	private String profilePicture;
 	
 	
+	public String getProfilePicture() {
+		return profilePicture;
+	}
+	public void setProfilePicture(String profilePicture) {
+		this.profilePicture = profilePicture;
+	}
 	public String getUserEmail() {
 		return userEmail;
 	}
