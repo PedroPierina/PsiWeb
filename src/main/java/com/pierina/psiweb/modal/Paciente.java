@@ -5,6 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
 
@@ -27,6 +28,9 @@ public class Paciente {
 	private String gender;
 	private String birthDate;
 	private String specialty;
+	
+	@Lob
+	private String profilePicture;
 	
 	public String getEmail() {
 		return email;
@@ -76,7 +80,20 @@ public class Paciente {
 	public void setSpecialty(String specialty) {
 		this.specialty = specialty;
 	}
-
+	public String getProfilePicture() {
+		return profilePicture;
+	}
+	public void setProfilePicture(String profilePicture) {
+		this.profilePicture = profilePicture;
+	}
+	
+	
+	public int getId() {
+		return id;
+	}
+	public void setId(int id) {
+		this.id = id;
+	}
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)

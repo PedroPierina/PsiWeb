@@ -12,6 +12,9 @@ public class User {
 	private String specialty;
 	private int idade;
 	private String profilePicture;
+	private int type;
+	private int crp;
+	private int id;
 	
 	
 	public String getProfilePicture() {
@@ -61,6 +64,24 @@ public class User {
 	}
 	public void setIdade(int idade) {
 		this.idade = idade;
+	}
+	public int getType() {
+		return type;
+	}
+	public void setType(int type) {
+		this.type = type;
+	}
+	public int getCrp() {
+		return crp;
+	}
+	public void setCrp(int crp) {
+		this.crp = crp;
+	}
+	public int getId() {
+		return id;
+	}
+	public void setId(int id) {
+		this.id = id;
 	}
 	
 	

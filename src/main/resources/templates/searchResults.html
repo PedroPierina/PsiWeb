@@ -10,7 +10,7 @@
   		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
   		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
-  		<link href="css/feedStyle.css" rel="stylesheet" />
+  		<link href="css/searchResultsStyle.css" rel="stylesheet" type="text/css"/>
     </head>
 
     <body>
@@ -49,35 +49,26 @@
 		    
 		  </div>
 		</nav>
-
-		<div>
-			<form class="box" th:action="@{/feed}" method="post">
-				<label><input type="text" name="title" id="title" placeholder="Titulo"/></label>
-		    	<textarea name="body" id="body" rows="10" cols="30"></textarea>
-			  	<br><br>
-			  	<input id ="send" type="submit">
-			</form>
-		</div>
+		<div class="box">
+			<h1>Resultados<h1>
+			<table>
+		    <tr th:each="use : ${user}" th:onclick="'javascript:callProfile(\'' + ${use.id} + '\', \'' + ${use.type} + '\');'" id="userFound" >
+		    	<td th:text="${use.name}"></td>
+		    	<td th:text="${use.idade}" + "Anos">Anos</td>
+		    	<td><img th:src="|data:image/png;base64,${use.profilePicture}|" alt=""/></td>
+		    </tr>
+		    </table>		
+    	</div>
+    
+    <script>
 		
-		<div class="row">
-        <div class="col-md-6">
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-12">
-            <table id="posts" class="table table-striped">
-                <thead>
-                <tr>
-                    <th>Posts</th>
-                </tr>
-                </thead>
-                <tbody id="post">
-                </tbody>
-            </table>
-        </div>
-    </div>  
-    
-    
+		
+		function callProfile(id, type){
+			window.location.href='/profile/' + id + '/' + type;
+		};
+		
+		
+		</script>
     </body>
     
     

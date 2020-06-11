@@ -29,6 +29,8 @@ public class Profissional {
 	private String localizacao;
 	private int preco;
 	private String specialty;
+	private int crp;
+	private String linkPublicacoes;
 	
 	@Lob
 	private String profilePicture;
@@ -94,8 +96,6 @@ public class Profissional {
 	public void setSpecialty(String specialty) {
 		this.specialty = specialty;
 	}
-	
-	
 	public int getId() {
 		return id;
 	}
@@ -107,6 +107,20 @@ public class Profissional {
 	}
 	public void setProfilePicture(String profilePicture) {
 		this.profilePicture = profilePicture;
+	}
+	
+	public int getCrp() {
+		return crp;
+	}
+	public void setCrp(int crp) {
+		this.crp = crp;
+	}
+	
+	public String getLinkPublicacoes() {
+		return linkPublicacoes;
+	}
+	public void setLinkPublicacoes(String linkPublicacoes) {
+		this.linkPublicacoes = linkPublicacoes;
 	}
 	@Override
 	public boolean equals(Object obj) {
