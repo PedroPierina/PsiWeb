@@ -15,8 +15,18 @@ public class User {
 	private int type;
 	private int crp;
 	private int id;
+	private String password;
+	private String firstName;
+	private String lastName;
+	private String birthDate;
 	
 	
+	public String getBirthDate() {
+		return birthDate;
+	}
+	public void setBirthDate(String birthDate) {
+		this.birthDate = birthDate;
+	}
 	public String getProfilePicture() {
 		return profilePicture;
 	}
@@ -82,6 +92,24 @@ public class User {
 	}
 	public void setId(int id) {
 		this.id = id;
+	}
+	public String getPassword() {
+		return password;
+	}
+	public void setPassword(String password) {
+		this.password = password;
+	}
+	public String getFirstName() {
+		return firstName;
+	}
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+	public String getLastName() {
+		return lastName;
+	}
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
 	}
 	
 	

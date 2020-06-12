@@ -28,4 +28,7 @@ public interface PacienteRepository extends CrudRepository<Paciente, Integer>{
 	
 	@Query("SELECT m FROM Paciente m WHERE m.name like %:name%")
 	List<Paciente> searchSimple(@Param("name") String name); 
+	
+	@Transactional 
+	void deleteByEmail(String email); 
 }

@@ -26,7 +26,10 @@ public interface ProfissionalRepository extends CrudRepository<Profissional, Int
 	List<Profissional> search(@Param("name") String name, @Param("lastName") String lastName); 
 	
 	@Query("SELECT m FROM Profissional m WHERE m.name like %:name%")
-	List<Profissional> searchSimple(@Param("name") String name); 
+	List<Profissional> searchSimple(@Param("name") String name);
+
+	@Transactional 
+	void deleteByEmail(String email); 
 	
 	
 	

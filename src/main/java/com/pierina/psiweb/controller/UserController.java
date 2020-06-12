@@ -41,7 +41,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.pierina.psiweb.modal.Paciente;
 import com.pierina.psiweb.modal.Post;
-import com.pierina.psiweb.modal.ProfessionalProfile;
 import com.pierina.psiweb.modal.Profissional;
 import com.pierina.psiweb.modal.User;
 import com.pierina.psiweb.repository.PacienteRepository;
@@ -102,6 +101,95 @@ public class UserController {
 		return "feed";
 	}
 	
+	@PostMapping("/updateProfessional")
+	public ModelAndView updateProfissional(@ModelAttribute("Profissional") Profissional formData, Model model) throws IOException {
+		ModelAndView modelAndView = new ModelAndView("profile");
+		profissionalRepository.deleteByEmail(formData.getEmail());
+		String name = new String();
+		System.out.println(formData.getEmail());
+		
+		profissional.setBirthDate(formData.getBirthDate());
+		profissional.setEmail(formData.getEmail());
+		profissional.setGender(user.getGender());
+		profissional.setLastName(formData.getLastName());
+		profissional.setLocalizacao(formData.getLocalizacao());
+		profissional.setName(formData.getName());
+		profissional.setPasswordHash(new BCryptPasswordEncoder().encode(formData.getPassword()));
+		profissional.setPreco(formData.getPreco());
+		profissional.setSpecialty(formData.getSpecialty());
+		profissional.setCrp(formData.getCrp());
+		profissional.setLinkPublicacoes(formData.getLinkPublicacoes());
+		profissional.setProfilePicture(formData.getProfilePicture());
+		profissional.setBirthDate(user.getBirthDate());
+		
+		profissionalRepository.save(profissional);
+		
+		name = profissional.getName() + " " + profissional.getLastName();
+		LocalDate birthDate = LocalDate.parse(profissional.getBirthDate());
+		Period idadeCompleta = Period.between(birthDate, LocalDate.now());
+		
+		user.setLogado(true);
+		user.setUserEmail(formData.getEmail());
+		user.setGender(profissional.getGender());
+		user.setName(name);
+		user.setLocalizacao(profissional.getLocalizacao());
+		user.setSpecialty(profissional.getSpecialty());
+		user.setIdade(idadeCompleta.getYears());
+		user.setProfilePicture(profissional.getProfilePicture());
+		user.setCrp(profissional.getCrp());
+		user.setType(1);
+		user.setId(profissional.getId());
+		user.setPassword(profissional.getPasswordHash());
+		user.setFirstName(profissional.getName());
+		user.setLastName(profissional.getLastName());
+		user.setBirthDate(profissional.getBirthDate());
+		user.setGender(profissional.getGender());
+		
+		modelAndView.addObject("user", user);
+		return modelAndView;
+	}
+	
+	@PostMapping("/updatePaciente")
+	public ModelAndView updatePaciente(@ModelAttribute("Paciente") Paciente formData, Model model) throws IOException {
+		ModelAndView modelAndView = new ModelAndView("profilePaciente");
+		pacienteRepository.deleteByEmail(formData.getEmail());
+		String name = new String();
+		
+		paciente.setBirthDate(formData.getBirthDate());
+		paciente.setEmail(formData.getEmail());
+		paciente.setGender(user.getGender());
+		paciente.setLastName(formData.getLastName());
+		paciente.setName(formData.getName());
+		paciente.setPasswordHash(new BCryptPasswordEncoder().encode(formData.getPassword()));
+		paciente.setSpecialty(formData.getSpecialty());
+		paciente.setProfilePicture(formData.getProfilePicture());
+		paciente.setBirthDate(user.getBirthDate());
+		
+		pacienteRepository.save(paciente);
+		
+		name = paciente.getName() + " " + paciente.getLastName();
+		LocalDate birthDate = LocalDate.parse(paciente.getBirthDate());
+		Period idadeCompleta = Period.between(birthDate, LocalDate.now());
+		
+		user.setLogado(true);
+		user.setUserEmail(formData.getEmail());
+		user.setGender(paciente.getGender());
+		user.setName(name);
+		user.setSpecialty(paciente.getSpecialty());
+		user.setIdade(idadeCompleta.getYears());
+		user.setProfilePicture(paciente.getProfilePicture());
+		user.setType(2);
+		user.setId(paciente.getId());
+		user.setPassword(paciente.getPasswordHash());
+		user.setFirstName(paciente.getName());
+		user.setLastName(paciente.getLastName());
+		user.setBirthDate(paciente.getBirthDate());
+		user.setGender(paciente.getGender());
+		
+		modelAndView.addObject("user", user);
+		return modelAndView;
+	}
+	
 //	@PostMapping("/feed")
 //	public String savePost(@ModelAttribute("Post") Post formData, Model model) {
 //		post = formData;
@@ -146,6 +234,11 @@ public class UserController {
 				user.setCrp(userFound.get().getCrp());
 				user.setType(1);
 				user.setId(userFound.get().getId());
+				user.setPassword(userFound.get().getPasswordHash());
+				user.setFirstName(userFound.get().getName());
+				user.setLastName(userFound.get().getLastName());
+				user.setBirthDate(userFound.get().getBirthDate());
+				user.setGender(userFound.get().getGender());
 				
 				return "feed";
 			}else {
@@ -168,6 +261,12 @@ public class UserController {
 					user.setProfilePicture(pacienteFound.get().getProfilePicture());
 					user.setType(2);
 					user.setId(pacienteFound.get().getId());
+					user.setPassword(pacienteFound.get().getPasswordHash());
+					user.setFirstName(pacienteFound.get().getName());
+					user.setLastName(pacienteFound.get().getLastName());
+					user.setBirthDate(pacienteFound.get().getBirthDate());
+					user.setGender(pacienteFound.get().getGender());
+					
 					return "feed";
 				}else {
 					return"login";
@@ -187,6 +286,7 @@ public class UserController {
 	
 	@RequestMapping("/feed")
     public String feedPage() {
+//		Puxar os ultimos posts ligado a ele / puxar todos posts dos amigos
 		if (user.isLogado()) {
 			return "feed";
 		}else {
@@ -379,5 +479,22 @@ public class UserController {
 		return modelAndView;
 	}
 	
+	@RequestMapping("/editProfile")
+    public ModelAndView  editProfilePage(){
+		ModelAndView modelAndView = new ModelAndView("home");
+		
+		if (user.isLogado()) {
+			if (user.getType() == 1) {
+				modelAndView.addObject("user", user);
+				modelAndView = new ModelAndView("editProfile");
+			}else {
+				modelAndView.addObject("user", user);
+				modelAndView = new ModelAndView("editPacienteProfile");
+			}
+		}
+		
+		modelAndView.addObject("user", user);
+		return modelAndView;
+	}
 	
 }
