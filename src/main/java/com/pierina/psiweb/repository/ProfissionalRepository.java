@@ -32,5 +32,8 @@ public interface ProfissionalRepository extends CrudRepository<Profissional, Int
 	void deleteByEmail(String email); 
 	
 	
-	
+//	@Modifying(clearAutomatically = true)
+//	@Transactional
+//    @Query("UPDATE Profissional SET profile_picture = :base64 WHERE email = :email")
+//    int updatePicture(@Param("email") String email, @Param("base64") String base64);
 }

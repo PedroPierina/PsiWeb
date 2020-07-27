@@ -19,8 +19,15 @@ public class User {
 	private String firstName;
 	private String lastName;
 	private String birthDate;
+	private int preco;
 	
 	
+	public int getPreco() {
+		return preco;
+	}
+	public void setPreco(int preco) {
+		this.preco = preco;
+	}
 	public String getBirthDate() {
 		return birthDate;
 	}

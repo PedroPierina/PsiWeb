@@ -62,20 +62,25 @@
                     </div>
                     <div class="col-md-6">
                         <div class="profile-head">
+                                    <!-- <p class="proile-rating">RANKINGS : <span>8/10</span></p> -->
+                                    </br>
                                     <h5 th:text="${user.name}"></h5>
-                                    <p class="proile-rating">RANKINGS : <span>8/10</span></p>
+                                    </br>
                             <ul class="nav nav-tabs" id="myTab" role="tablist">
                                 <li class="nav-item">
                                     <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">About</a>
                                 </li>
-                                <li class="nav-item">
+                                <!-- <li class="nav-item">
                                     <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Timeline</a>
+                                </li> -->
+                                <li class="nav-item">
+                                	<button class="btn btn-outline-success my-2 my-sm-0" type="button" th:onclick="'javascript:follow(\'' + ${user.id} + '\', \'' + ${user.type} + '\');'">Seguir</button>
                                 </li>
                             </ul>
                         </div>
                     </div>
                 </div>
-                <div class="row">
+                <!-- <div class="row">
                     <div class="col-md-4">
                         <div class="profile-work">
                             <p>WORK LINK</p>
@@ -89,8 +94,9 @@
                             <a href="">WooCommerce</a><br/>
                             <a href="">PHP, .Net</a><br/>
                         </div>
-                    </div>
+                    </div> -->
                     <div class="col-md-8">
+                    <div class="center">
                         <div class="tab-content profile-tab" id="myTabContent">
                             <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
                                         <div class="row">
@@ -105,12 +111,12 @@
                                             </div>
                                             <div class="col-md-6" id="email" th:text="${user.userEmail}"></div>
                                         </div>
-                                        <div class="row">
+                                        <!-- <div class="row">
                                             <div class="col-md-6">
                                                 <label>Localização</label>
                                             </div>
                                             <div class="col-md-6" id="localizacao" th:text="${user.localizacao}"></div>
-                                        </div>
+                                        </div> -->
                                         <div class="row">
                                             <div class="col-md-6">
                                                 <label>Genero</label>
@@ -175,14 +181,20 @@
                             </div>
                         </div>
                     </div>
+                    </div>
                 </div>
         </div>
 		
 		<script>
 		
 		
-		document.getElementById("file").onchange = function() {
-		    document.getElementById("form").submit();
+		function follow(id, type){
+        		console.log(id);
+        		console.log(type);
+				var xhr = new XMLHttpRequest();
+				xhr.open("POST", "/follow/"+ id + '/' + type);
+				xhr.send();
+				
 		};
 		</script>
 		

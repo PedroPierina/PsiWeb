@@ -1,11 +1,15 @@
 package com.pierina.psiweb.modal;
 
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Lob;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
 
@@ -32,6 +36,16 @@ public class Paciente {
 	@Lob
 	private String profilePicture;
 	
+	@OneToMany(mappedBy = "paciente", cascade = CascadeType.REMOVE)
+	private List<FriendPaciente> friendList;
+	
+	
+	public List<FriendPaciente> getFriendList() {
+		return friendList;
+	}
+	public void setFriendList(List<FriendPaciente> friendList) {
+		this.friendList = friendList;
+	}
 	public String getEmail() {
 		return email;
 	}

@@ -1,6 +1,7 @@
 package com.pierina.psiweb.modal;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Collection;
 import java.util.Optional;
 
@@ -18,6 +19,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.data.annotation.CreatedDate;
 
 @Entity
 @Table(name = "post")
@@ -36,9 +38,20 @@ public class Post {
     private Date creatDate;
 	
 	private String userEmail;
+	private String name;
 	
 	@OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
-    private Collection<Comment> comments;
+    private List<Comment> comments;
+
+	
+	
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
 
 	public int getId() {
 		return id;
@@ -80,11 +93,11 @@ public class Post {
 		this.userEmail = userEmail;
 	}
 
-	public Collection<Comment> getComments() {
+	public List<Comment> getComments() {
 		return comments;
 	}
 
-	public void setComments(Collection<Comment> comments) {
+	public void setComments(List<Comment> comments) {
 		this.comments = comments;
 	}
 
@@ -93,5 +106,6 @@ public class Post {
 		return "Post [id=" + id + ", title=" + title + ", body=" + body + ", creatDate=" + creatDate + ", userEmail="
 				+ userEmail + ", comments=" + comments + "]";
 	}
+	
 	
 }

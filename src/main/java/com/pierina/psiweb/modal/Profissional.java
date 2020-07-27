@@ -1,11 +1,16 @@
 package com.pierina.psiweb.modal;
 
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Lob;
+import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
 
@@ -34,6 +39,10 @@ public class Profissional {
 	
 	@Lob
 	private String profilePicture;
+	
+	
+	@OneToMany(mappedBy = "profissional", cascade = CascadeType.REMOVE)
+	private List<Friend> friendList;
 	
 	
 	public String getEmail() {
@@ -121,6 +130,13 @@ public class Profissional {
 	}
 	public void setLinkPublicacoes(String linkPublicacoes) {
 		this.linkPublicacoes = linkPublicacoes;
+	}
+	
+	public List<Friend> getFriendList() {
+		return friendList;
+	}
+	public void setFriendList(List<Friend> friendList) {
+		this.friendList = friendList;
 	}
 	@Override
 	public boolean equals(Object obj) {

@@ -10,7 +10,7 @@
   		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
   		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
-  		<link href="css/feedStyle.css" rel="stylesheet" />
+  		<link href="/css/feedStyle.css" rel="stylesheet" />
     </head>
 
     <body>
@@ -36,7 +36,7 @@
 		        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
 		          <a class="dropdown-item" href="/logout">Logout</a>
 		          <div class="dropdown-divider"></div>
-		          <a class="dropdown-item" href="#">Deletar Conta</a>
+		          <a class="dropdown-item" href="/deleteUser">Deletar Conta</a>
 		        </div>
 		      </li>
 		      
@@ -49,34 +49,83 @@
 		    
 		  </div>
 		</nav>
-
-		<div>
-			<form class="box" th:action="@{/feed}" method="post">
-				<label><input type="text" name="title" id="title" placeholder="Titulo"/></label>
-		    	<textarea name="body" id="body" rows="10" cols="30"></textarea>
-			  	<br><br>
-			  	<input id ="send" type="submit">
-			</form>
-		</div>
 		
-		<div class="row">
-        <div class="col-md-6">
-        </div>
+		<div class="container">
+	    <div class="row">
+	    	<div class="col-sm-8">
+	    	</div>
+	    	<div class="col-5">
+			<div>
+				<form class="box" th:action="@{/feed}" method="post">
+					<label><input type="text" name="title" id="title" placeholder="Titulo"/></label>
+			    	<textarea name="body" id="body" rows="10" cols="30"></textarea>
+				  	<br><br>
+				  	<input id ="send" type="submit">
+				</form>
+			</div>
+			
+	            <table id="posts" class="table table-striped">
+		            <tbody>
+	                	<tr th:each="post : ${posts}">
+	        				<div class="postBox"> 
+		        				<div class="borderPos">
+		        					<h4 th:text="${post.name}"></h4>
+				                	<h5 th:text="${post.title}"></h5>
+				                	<h6 th:text="${post.body}"></h6>
+				                </div>	
+			                	</br>
+			                	<button type="button" class="btn btn-primary btn-lg btn-block">Like</button>
+							    </br>
+							    <h4>Commentarios</h4>
+								<div class="commentBox" th:each="comment : ${post.comments}">
+									<hr>
+									<h5 th:text="${comment.name} + ':'+ ${comment.body} "><p th:text="${comment.body}"></p</h5>
+								</div>	
+								<hr>								    		
+			                	<form  th:action="@{/feed/comment}" method="post">
+				                	<div><label><input type="hidden" name="userEmail" th:value="${post.userEmail}"/> </label></div>
+				                	<div><label><input type="hidden" name="idPost" th:value="${post.id}"/> </label></div>
+								            <div><textarea name="body" id="body" rows="3" cols="35"></textarea></div>
+								            <div><input type="submit" value="Enviar"/></div>
+							    </form>
+		        			</div>
+	               		</tr>
+	                </tbody>
+		    	</table>
+	        </div>
+	        
+	        <div class="col-5">
+			<div class="friendBox"> 
+				<h3>Seguindo</h3>
+				<table id="friends" class="table table-striped">
+				    	<tbody>
+				        	<tr th:each="friend : ${friends}" th:onclick="'javascript:callProfile(\'' + ${friend.friendId} + '\', \'' + ${friend.type} + '\');'" id="friend" >
+				        		<div class="borderPos">
+				        			<h4 th:text="${friend.name}"></h4>
+				        			<img class="image" th:src="|data:image/png;base64,${friend.profilePicture}|" alt="" th:onclick="'javascript:callProfile(\'' + ${friend.friendId} + '\', \'' + ${friend.type} + '\');'" id="friend"/>
+				   </div>
+				        	</tr>
+				        </tbody>
+			    </table>
+						        </div>	
+	        </div>
+	    </div>
+	    
+	    
+	        
+
     </div>
-    <div class="row">
-        <div class="col-md-12">
-            <table id="posts" class="table table-striped">
-                <thead>
-                <tr>
-                    <th>Posts</th>
-                </tr>
-                </thead>
-                <tbody id="post">
-                </tbody>
-            </table>
-        </div>
-    </div>  
     
+     <script>
+		
+		
+		function callProfile(id, type){
+			console.log("Entrei");
+			window.location.href='/profile/' + id + '/' + type;
+		};
+		
+		
+	</script>
     
     </body>
     

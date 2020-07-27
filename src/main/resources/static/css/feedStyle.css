@@ -6,14 +6,18 @@ body{
 }
 
 .box{
-    width: 34%;
+    margin-right: 100% ;
+    width: 85%;
     padding: 1%;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%,-50%);
+    margin-top:2%;
+    margin-bottom: 10%;
+    position: initial;
+    transform: translate(100%,15%);
     background: #2c3e50;
     text-align: center;
+    display:block;
+    position:static;
+    box-shadow: 0 0 15px 10px #282B2D;
 }
 
 .box h1{
@@ -58,4 +62,73 @@ body{
 
 .box input[type = "submit"]:hover{
     background: #2ecc71; 
+}
+
+.postBox{
+	margin-right: 100% ;
+    width: 85%;
+    padding: 1%;
+    margin-top:3%;
+    position: initial;
+    transform: translate(100%,15%);
+    background: #2c3e50;
+    text-align: center;
+    display:block;
+    position:static;
+    box-shadow: 0 0 15px 10px #282B2D;
+}
+
+.margin{
+	display:block;
+	position:static;
+}
+
+.borderPos{
+border: 1px solid #294A5F  !important;
+
+}
+.commentBox{
+	border: 1px !important;
+	border-radius: 25px !important;
+}
+
+hr {
+  border: 1px solid #294A5F ;
+}
+
+h4, h5, h6{
+color: #88B0CA ;
+}
+.friendBox{
+	margin-right: 500%;
+    width: 75%;
+    padding: 1%;
+    position: initial;
+    transform: translate(100%,15%);
+    background: #2c3e50;
+    text-align: center;
+    display:block;
+    position:static;
+    max-width: 75%;
+    border-radius: 25px;
+    transition: 0.3s;
+ 	box-shadow: 0 0 10px 5px;
+ 	position: -webkit-sticky; /* Safari */
+    position: sticky;
+    top: 0;
+}
+
+.friendBox:hover {
+    box-shadow: 0 0 15px 10px #282B2D;
+}
+
+.image {
+  height: 45%;
+  width: 45%;
+  margin: 5px;
+  border-radius: 25px;
+}
+
+.container {
+  padding: 2px 16px;
 }

@@ -35,8 +35,24 @@ public class Comment {
     @NotNull
     private Post post;
 	
-	private String userEmail;
+	private int idPost;
 	
+	private String userEmail;
+	private String name;
+	
+	
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public int getIdPost() {
+		return idPost;
+	}
+	public void setIdPost(int postId) {
+		this.idPost = postId;
+	}
 	public Long getId() {
 		return id;
 	}
@@ -67,6 +83,12 @@ public class Comment {
 	public void setUserEmail(String userEmail) {
 		this.userEmail = userEmail;
 	}
+	@Override
+	public String toString() {
+		return "Comment [id=" + id + ", body=" + body + ", createDate=" + createDate + ", idPost="
+				+ idPost + ", userEmail=" + userEmail + "]";
+	}
+	
 	
 	
 }
