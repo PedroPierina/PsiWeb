@@ -775,4 +775,40 @@ public class UserController {
 
 		return "home";
 	}
+	
+	@RequestMapping("/chat")
+	public ModelAndView chat() {
+		ModelAndView modelAndView = new ModelAndView("chat");
+		
+		if (user.isLogado()) {
+			if (user.getType() == 1) {
+				List<Friend> friends = friendRepository.findAllByProfissional(profissionalRepository.findByEmail(user.getUserEmail()));
+				modelAndView.addObject("friends", friends);
+			}else {
+				List<FriendPaciente> friends = friendPacienteRepository.findAllByPaciente(pacienteRepository.findByEmail(user.getUserEmail()));
+				modelAndView.addObject("friends", friends);
+			}
+		}
+
+		modelAndView.addObject("user", user);
+		return modelAndView;
+	}
+	
+	@RequestMapping("/chat/requestInvidualChat")
+	public ModelAndView requestInvidualChat() {
+		ModelAndView modelAndView = new ModelAndView("chat");
+		
+		if (user.isLogado()) {
+			if (user.getType() == 1) {
+				List<Friend> friends = friendRepository.findAllByProfissional(profissionalRepository.findByEmail(user.getUserEmail()));
+				modelAndView.addObject("friends", friends);
+			}else {
+				List<FriendPaciente> friends = friendPacienteRepository.findAllByPaciente(pacienteRepository.findByEmail(user.getUserEmail()));
+				modelAndView.addObject("friends", friends);
+			}
+		}
+
+		modelAndView.addObject("user", user);
+		return modelAndView;
+	}
 }

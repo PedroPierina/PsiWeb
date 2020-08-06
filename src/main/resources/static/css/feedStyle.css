@@ -16,7 +16,6 @@ body{
     background: #2c3e50;
     text-align: center;
     display:block;
-    position:static;
     box-shadow: 0 0 15px 10px #282B2D;
 }
 
@@ -74,13 +73,14 @@ body{
     background: #2c3e50;
     text-align: center;
     display:block;
-    position:static;
     box-shadow: 0 0 15px 10px #282B2D;
+    margin-top:50px;
+    position:relative;
+    z-index: 99;
 }
 
 .margin{
 	display:block;
-	position:static;
 }
 
 .borderPos{
@@ -103,12 +103,10 @@ color: #88B0CA ;
 	margin-right: 500%;
     width: 75%;
     padding: 1%;
-    position: initial;
     transform: translate(100%,15%);
     background: #2c3e50;
     text-align: center;
     display:block;
-    position:static;
     max-width: 75%;
     border-radius: 25px;
     transition: 0.3s;
@@ -116,6 +114,7 @@ color: #88B0CA ;
  	position: -webkit-sticky; /* Safari */
     position: sticky;
     top: 0;
+    z-index: 99;
 }
 
 .friendBox:hover {
@@ -131,4 +130,12 @@ color: #88B0CA ;
 
 .container {
   padding: 2px 16px;
+  position:relative;
+}
+.sticky{
+	position: -webkit-sticky; /* Safari */
+	position: sticky !important;
+	top: 0;
+	position:fixed;
+	z-index: 100;
 }
