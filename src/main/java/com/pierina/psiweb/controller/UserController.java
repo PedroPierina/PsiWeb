@@ -2,39 +2,27 @@ package com.pierina.psiweb.controller;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
 import java.util.Base64;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-import javax.imageio.ImageIO;
-import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
@@ -44,6 +32,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.pierina.psiweb.modal.Comment;
 import com.pierina.psiweb.modal.Friend;
 import com.pierina.psiweb.modal.FriendPaciente;
+import com.pierina.psiweb.modal.Message;
 import com.pierina.psiweb.modal.Paciente;
 import com.pierina.psiweb.modal.Post;
 import com.pierina.psiweb.modal.Profissional;
@@ -51,6 +40,7 @@ import com.pierina.psiweb.modal.User;
 import com.pierina.psiweb.repository.CommentRepository;
 import com.pierina.psiweb.repository.FriendPacienteRepository;
 import com.pierina.psiweb.repository.FriendRepository;
+import com.pierina.psiweb.repository.MessageRepository;
 import com.pierina.psiweb.repository.PacienteRepository;
 import com.pierina.psiweb.repository.PostRepository;
 import com.pierina.psiweb.repository.ProfissionalRepository;
@@ -74,6 +64,9 @@ public class UserController {
 
 	@Autowired
 	private FriendPacienteRepository friendPacienteRepository;
+	
+	@Autowired
+	private MessageRepository messageRepository;
 
 	Paciente paciente = new Paciente();
 	Profissional profissional = new Profissional();
@@ -82,7 +75,7 @@ public class UserController {
 //	File file =  new File("/psiweb/src/main/resources/static/assets/img/default-user-male.png");
 	String encodedfile;
 	private BufferedImage img;
-	File file = new File(getClass().getClassLoader().getResource("teste.jpg").getFile());
+//	File file = new File(getClass().getClassLoader().getResource("teste.jpg").getFile());
 
 	@PostMapping("/registerPatient")
 	public String savePaciente(@ModelAttribute("Paciente") Paciente formData, Model model) {
@@ -127,7 +120,6 @@ public class UserController {
 		ModelAndView modelAndView = new ModelAndView("profile");
 		profissionalRepository.deleteByEmail(formData.getEmail());
 		String name = new String();
-		System.out.println(formData.getEmail());
 
 		profissional.setBirthDate(formData.getBirthDate());
 		profissional.setEmail(formData.getEmail());
@@ -257,7 +249,60 @@ public class UserController {
 		modelAndView.addObject("posts", posts);
 		return modelAndView;
 	}
+	
+	@PostMapping("/chat")
+	public ModelAndView enviaMensagem(@ModelAttribute("Message") Message formData, Model model, @ModelAttribute("friendId") int friendId, @ModelAttribute("friendType") int friendType) {
+		ModelAndView modelAndView = new ModelAndView("chat");
+		
+		if (user.isLogado()) {
+			
+			formData.setFromEmail(user.getUserEmail());
+			formData.setFromName(user.getName());
+			formData.setFromType(user.getType());
+			if (friendType == 1) {
+				formData.setToEmail(profissionalRepository.findById(friendId).get().getEmail());
+			}else {
+				formData.setToEmail(pacienteRepository.findById(friendId).get().getEmail());
+			}
+			
+			formData.setToType(friendType);
+			
+			messageRepository.save(formData);
+			
+			if (user.getType() == 1) {
+				List<Friend> friends = friendRepository.findAllByProfissional(profissionalRepository.findByEmail(user.getUserEmail()));
+				
+				modelAndView.addObject("friends", friends);
+				modelAndView.addObject("chatFriend", friends.get(0));
+				
+				if (friends.get(0).getType() == 1) {
+					List<Message> messages = messageRepository.findByfromEmailtoEmail(user.getUserEmail(),profissionalRepository.findById(friends.get(0).getType()).get().getEmail());
+					messages.addAll(messageRepository.findByfromEmailtoEmail(profissionalRepository.findById(friends.get(0).getType()).get().getEmail(), user.getUserEmail()));
+					
+					Collections.sort(messages); 
+					
+					modelAndView.addObject("messages", messages);
+					
+				}else {
+					List<Message> messages = messageRepository.findByfromEmailtoEmail(user.getUserEmail(),pacienteRepository.findById(friends.get(0).getType()).get().getEmail());
+					messages.addAll(messageRepository.findByfromEmailtoEmail(pacienteRepository.findById(friends.get(0).getType()).get().getEmail(), user.getUserEmail()));
+					
+					Collections.sort(messages);
 
+					modelAndView.addObject("messages", messages);
+				}
+				
+			}else {
+				List<FriendPaciente> friends = friendPacienteRepository.findAllByPaciente(pacienteRepository.findByEmail(user.getUserEmail()));
+				modelAndView.addObject("friends", friends);
+				modelAndView.addObject("chatFriend", friends.get(0));
+			}
+		}
+
+		modelAndView.addObject("user", user);
+		return modelAndView;
+	}
+	
 //	Socket
 //	@MessageMapping("/feed")
 //	@SendTo("/topic/posts")
@@ -308,8 +353,6 @@ public class UserController {
 				modelAndView = new ModelAndView("feed");
 				
 				for (Friend friend : friendRepository.findAllByProfissional(profissionalRepository.findByEmail(user.getUserEmail()))) {
-					System.out.println(friend.getName());
-					System.out.println(friend.getFriendId());
 					Optional<Profissional> optPro = profissionalRepository.findById(friend.getFriendId());
 					
 					if (optPro.isPresent()) {
@@ -783,10 +826,32 @@ public class UserController {
 		if (user.isLogado()) {
 			if (user.getType() == 1) {
 				List<Friend> friends = friendRepository.findAllByProfissional(profissionalRepository.findByEmail(user.getUserEmail()));
+				
+				
 				modelAndView.addObject("friends", friends);
+				modelAndView.addObject("chatFriend", friends.get(0));
+				
+				if (friends.get(0).getType() == 1) {
+					List<Message> messages = messageRepository.findByfromEmailtoEmail(user.getUserEmail(),profissionalRepository.findById(friends.get(0).getType()).get().getEmail());
+					messages.addAll(messageRepository.findByfromEmailtoEmail(profissionalRepository.findById(friends.get(0).getType()).get().getEmail(), user.getUserEmail()));
+					
+					Collections.sort(messages); 
+					
+					modelAndView.addObject("messages", messages);
+					
+				}else {
+					List<Message> messages = messageRepository.findByfromEmailtoEmail(user.getUserEmail(),pacienteRepository.findById(friends.get(0).getType()).get().getEmail());
+					messages.addAll(messageRepository.findByfromEmailtoEmail(pacienteRepository.findById(friends.get(0).getType()).get().getEmail(), user.getUserEmail()));
+					
+					Collections.sort(messages);
+
+					modelAndView.addObject("messages", messages);
+				}
+				
 			}else {
 				List<FriendPaciente> friends = friendPacienteRepository.findAllByPaciente(pacienteRepository.findByEmail(user.getUserEmail()));
 				modelAndView.addObject("friends", friends);
+				modelAndView.addObject("chatFriend", friends.get(0));
 			}
 		}
 
@@ -794,21 +859,52 @@ public class UserController {
 		return modelAndView;
 	}
 	
-	@RequestMapping("/chat/requestInvidualChat")
-	public ModelAndView requestInvidualChat() {
+	@RequestMapping("/chat/requestInvidualChat/{id}/{type}")
+	public ModelAndView requestInvidualChat(@PathVariable("id") int id, @PathVariable("type") int type) {
 		ModelAndView modelAndView = new ModelAndView("chat");
 		
+		
 		if (user.isLogado()) {
+			if (type == 1) {
+				List<Message> messages = messageRepository.findByfromEmailtoEmail(user.getUserEmail(),profissionalRepository.findById(id).get().getEmail());
+				messages.addAll(messageRepository.findByfromEmailtoEmail(profissionalRepository.findById(id).get().getEmail(), user.getUserEmail()));
+				
+				Collections.sort(messages);
+				modelAndView.addObject("messages", messages);
+				
+			}else {
+				List<Message> messages = messageRepository.findByfromEmailtoEmail(user.getUserEmail(),pacienteRepository.findById(id).get().getEmail());
+				messages.addAll(messageRepository.findByfromEmailtoEmail(pacienteRepository.findById(id).get().getEmail(), user.getUserEmail()));
+				
+				Collections.sort(messages);
+				modelAndView.addObject("messages", messages);
+			}
+			
 			if (user.getType() == 1) {
 				List<Friend> friends = friendRepository.findAllByProfissional(profissionalRepository.findByEmail(user.getUserEmail()));
 				modelAndView.addObject("friends", friends);
+				
+				for (Friend friend : friends) {
+					if (friend.getFriendId() == id) {
+						modelAndView.addObject("chatFriend", friend);
+					}
+				}
+				
 			}else {
 				List<FriendPaciente> friends = friendPacienteRepository.findAllByPaciente(pacienteRepository.findByEmail(user.getUserEmail()));
 				modelAndView.addObject("friends", friends);
+				
+				for (FriendPaciente friend : friends) {
+					if (friend.getFriendId() == id) {
+						modelAndView.addObject("chatFriend", friend);
+					}
+				}
 			}
 		}
 
 		modelAndView.addObject("user", user);
 		return modelAndView;
 	}
+	
+
 }
