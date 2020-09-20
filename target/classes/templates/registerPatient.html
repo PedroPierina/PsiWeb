@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+    <head>
+        <meta charset="utf-8">
+        <title>Registrar Patient</title>
+        <link rel="icon" type="image/x-icon" href="assets/img/favicon.ico" />
+        <link href="css/registerStyle.css" rel="stylesheet" />
+    </head>
+    <body>
+        <form class="box" th:action="@{/registerPatient}" method="post">
+        <h1>Registrar Paciente</h1>
+            <div><label><input type="email" name="email" placeholder="Email"/></label></div>
+            <div><label><input type="password" name="password" placeholder="Password"/> </label></div>
+            <div><label><input type="text" name="name" placeholder="Name"/> </label></div>
+            <div><label><input type="text" name="lastName" placeholder="Last Name"/> </label></div>
+
+            <div>
+                <label></label>
+                <select id="gender" name="gender">
+                    <option value="" selected disabled hidden>Selecione Genero</option>
+                    <option value="Homem">Homem</option>
+                    <option value="Mulher">Mulher</option>
+                    <option value="Outro">Outro</option>
+                  </select>
+            
+            </div>
+            
+            <div><label>Data de Nascimento:</br> <input type="date" name="birthDate" placeholder="Data de Nascimento"/></label></div>
+
+            <div>
+                <label></label>
+                <select id="specialty" name="specialty">
+                    <option value="" selected disabled hidden>Selecione Especialidade</option>
+                    <option value="Ansiedade">Ansiedade</option>
+                    <option value="Depressao">Depressão</option>
+                    <option value="Toc">Toc</option>
+                    <option value="fobia">Fobia</option>
+                    <option value="AbusoDependenciaSubstancia">Abuso/Dependência de Substâncias Quimicas</option>
+                    <option value="Esquizofrenia">Esquizofrenia</option>
+                    <option value="Bipolaridade">Bipolaridade</option>
+                    <option value="Autismo">Autismo</option>
+                    <option value="TranstornosAlimentares">Transtornos Alimentares</option>
+                  </select>
+            
+            </div>
+           
+            <div><input type="submit" value="Register"/></div>
+        </form>
+    </body>
+</html>

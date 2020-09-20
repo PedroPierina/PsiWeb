@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+    <head>
+        <meta charset="utf-8">
+        <title>Registrar Profissional</title>
+        <link rel="icon" type="image/x-icon" href="assets/img/favicon.ico" />
+        <link href="css/registerProStyle.css" rel="stylesheet" />
+    </head>
+    <body>
+    	
+        <form class="box" th:action="@{/registerProfessional}" method="post">
+        <h1>Registrar Profissional</h1>
+            <div><label><input type="email" name="email" placeholder="Email"/></label></div>
+            <div><label><input type="password" name="password" placeholder="Password"/> </label></div>
+            <div><label><input type="name" name="name" placeholder="Name"/> </label></div>
+            <div><label><input type="lastName" name="lastName" placeholder="Last Name"/> </label></div>
+            <div><label><input type="text" name="crp" placeholder="CRP"/> </label></div>
+            <div><label><input type="text" name="linkPublicacao" placeholder="linkPublicacao"/> </label></div>
+
+            <div>
+                <label></label>
+                <select id="gender" name="gender">
+                    <option value="" selected disabled hidden>Selecione Genero</option>
+                    <option value="Homem">Homem</option>
+                    <option value="Mulher">Mulher</option>
+                    <option value="Outro">Outro</option>
+                  </select>
+            
+            </div>
+            
+            <div><label>Data de Nascimento:</br> <input type="date" name="birthDate" placeholder="Data de Nascimento"/></label></div>
+            <div><label><input type="text" name="localizacao" placeholder="Localização"/> </label></div>
+
+            <div>
+                <label>Preço </label>
+               	<label class="radio-inline" for="male"> <input type="radio" id="preco1" name="preco" value="1"> 1</label>
+                <label class="radio-inline" for="female"> <input type="radio" id="preco2" name="preco" value="2">2</label>
+                <label class="radio-inline" for="male"> <input type="radio" id="preco3" name="preco" value="3">3</label>
+                <label class="radio-inline" for="female"><input type="radio" id="preco4" name="preco" value="4">4</label>
+               	<label class="radio-inline" for="male"> <input type="radio" id="preco5" name="preco" value="5">5</label>
+                
+                
+            </div>
+            
+            <div>
+                <label></label>
+                <select id="specialty" name="specialty">
+                    <option value="" selected disabled hidden>Selecione Especialidade</option>
+                    <option value="Ansiedade">Ansiedade</option>
+                    <option value="Depressao">Depressão</option>
+                    <option value="Toc">Toc</option>
+                    <option value="Fobia">Fobia</option>
+                    <option value="AbusoDependenciaSubstancia">Abuso/Dependência de Substâncias Quimicas</option>
+                    <option value="Esquizofrenia">Esquizofrenia</option>
+                    <option value="Bipolaridade">Bipolaridade</option>
+                    <option value="Autismo">Autismo</option>
+                    <option value="TranstornosAlimentares">Transtornos Alimentares</option>
+                  </select>
+            
+            </div>
+
+            <div><input type="submit" value="Register"/></div>
+        </form>
+    </body>
+</html>

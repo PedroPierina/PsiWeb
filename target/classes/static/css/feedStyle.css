@@ -1,0 +1,141 @@
+body{
+    margin: 0;
+    padding: 0;
+    font-family: sans-serif;
+    background: #34495e;
+}
+
+.box{
+    margin-right: 100% ;
+    width: 85%;
+    padding: 1%;
+    margin-top:2%;
+    margin-bottom: 10%;
+    position: initial;
+    transform: translate(100%,15%);
+    background: #2c3e50;
+    text-align: center;
+    display:block;
+    box-shadow: 0 0 15px 10px #282B2D;
+}
+
+.box h1{
+    color: white;
+    text-transform: uppercase;
+    font-weight: 500;
+}
+
+.box input[type = "text"], .box input[type = "password"]{
+    border: 0;
+    background: none;
+    display: block;
+    margin: 20px auto;
+    text-align: center;
+    border: 2px solid #218f97;
+    padding:  14px 10px;
+    width: 200px;
+    outline: none;
+    border-radius: 24px;
+    transition: 0.25s;
+}
+
+.box input[type = "text"]:focus, .box input[type = "password"]:focus{
+    width: 280px;
+    border-color: #2ecc71;
+}
+
+.box input[type = "submit"]{
+    border: 0;
+    background: none;
+    display: block;
+    margin: 20px auto;
+    text-align: center;
+    border: 2px solid #2ecc71;
+    padding:  14px 10px;
+    outline: none;
+    color: white;
+    border-radius: 24px;
+    transition: 0.25s;
+    cursor: pointer;
+}
+
+.box input[type = "submit"]:hover{
+    background: #2ecc71; 
+}
+
+.postBox{
+	margin-right: 100% ;
+    width: 85%;
+    padding: 1%;
+    margin-top:3%;
+    position: initial;
+    transform: translate(100%,15%);
+    background: #2c3e50;
+    text-align: center;
+    display:block;
+    box-shadow: 0 0 15px 10px #282B2D;
+    margin-top:50px;
+    position:relative;
+    z-index: 99;
+}
+
+.margin{
+	display:block;
+}
+
+.borderPos{
+border: 1px solid #294A5F  !important;
+
+}
+.commentBox{
+	border: 1px !important;
+	border-radius: 25px !important;
+}
+
+hr {
+  border: 1px solid #294A5F ;
+}
+
+h4, h5, h6{
+color: #88B0CA ;
+}
+.friendBox{
+	margin-right: 500%;
+    width: 75%;
+    padding: 1%;
+    transform: translate(100%,15%);
+    background: #2c3e50;
+    text-align: center;
+    display:block;
+    max-width: 75%;
+    border-radius: 25px;
+    transition: 0.3s;
+ 	box-shadow: 0 0 10px 5px;
+ 	position: -webkit-sticky; /* Safari */
+    position: sticky;
+    top: 0;
+    z-index: 99;
+}
+
+.friendBox:hover {
+    box-shadow: 0 0 15px 10px #282B2D;
+}
+
+.image {
+  height: 45%;
+  width: 45%;
+  margin: 5px;
+  border-radius: 25px;
+}
+
+.container {
+  padding: 2px 16px;
+  position:relative;
+}
+.sticky{
+	position: -webkit-sticky; /* Safari */
+	position: sticky !important;
+	top: 0;
+	position:fixed;
+	z-index: 100;
+}
