@@ -1,7 +1,6 @@
 package com.pierina.psiweb.controller;
 
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.text.ParseException;
@@ -15,8 +14,12 @@ import java.util.Optional;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.deeplearning4j.nn.modelimport.keras.KerasModelImport;
+import org.deeplearning4j.nn.modelimport.keras.exceptions.InvalidKerasConfigurationException;
+import org.deeplearning4j.nn.modelimport.keras.exceptions.UnsupportedKerasConfigurationException;
+import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
+import org.nd4j.common.io.ClassPathResource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.annotation.CreatedDate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -28,6 +31,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.tensorflow.SavedModelBundle;
+import org.tensorflow.Session;
 
 import com.pierina.psiweb.modal.Comment;
 import com.pierina.psiweb.modal.Friend;
@@ -64,7 +69,7 @@ public class UserController {
 
 	@Autowired
 	private FriendPacienteRepository friendPacienteRepository;
-	
+
 	@Autowired
 	private MessageRepository messageRepository;
 
@@ -76,6 +81,9 @@ public class UserController {
 	String encodedfile;
 	private BufferedImage img;
 //	File file = new File(getClass().getClassLoader().getResource("teste.jpg").getFile());
+
+//	  SavedModelBundle bundle=SavedModelBundle.load("/psiweb/target/classes/my_model","serve");
+//      Session s = bundle.session();
 
 	@PostMapping("/registerPatient")
 	public String savePaciente(@ModelAttribute("Paciente") Paciente formData, Model model) {
@@ -249,51 +257,60 @@ public class UserController {
 		modelAndView.addObject("posts", posts);
 		return modelAndView;
 	}
-	
+
 	@PostMapping("/chat")
-	public ModelAndView enviaMensagem(@ModelAttribute("Message") Message formData, Model model, @ModelAttribute("friendId") int friendId, @ModelAttribute("friendType") int friendType) {
+	public ModelAndView enviaMensagem(@ModelAttribute("Message") Message formData, Model model,
+			@ModelAttribute("friendId") int friendId, @ModelAttribute("friendType") int friendType) {
 		ModelAndView modelAndView = new ModelAndView("chat");
-		
+
 		if (user.isLogado()) {
-			
+
 			formData.setFromEmail(user.getUserEmail());
 			formData.setFromName(user.getName());
 			formData.setFromType(user.getType());
 			if (friendType == 1) {
 				formData.setToEmail(profissionalRepository.findById(friendId).get().getEmail());
-			}else {
+			} else {
 				formData.setToEmail(pacienteRepository.findById(friendId).get().getEmail());
 			}
-			
+
 			formData.setToType(friendType);
-			
+
 			messageRepository.save(formData);
-			
+
 			if (user.getType() == 1) {
-				List<Friend> friends = friendRepository.findAllByProfissional(profissionalRepository.findByEmail(user.getUserEmail()));
-				
+				List<Friend> friends = friendRepository
+						.findAllByProfissional(profissionalRepository.findByEmail(user.getUserEmail()));
+
 				modelAndView.addObject("friends", friends);
 				modelAndView.addObject("chatFriend", friends.get(0));
-				
+
 				if (friends.get(0).getType() == 1) {
-					List<Message> messages = messageRepository.findByfromEmailtoEmail(user.getUserEmail(),profissionalRepository.findById(friends.get(0).getType()).get().getEmail());
-					messages.addAll(messageRepository.findByfromEmailtoEmail(profissionalRepository.findById(friends.get(0).getType()).get().getEmail(), user.getUserEmail()));
-					
-					Collections.sort(messages); 
-					
+					List<Message> messages = messageRepository.findByfromEmailtoEmail(user.getUserEmail(),
+							profissionalRepository.findById(friends.get(0).getType()).get().getEmail());
+					messages.addAll(messageRepository.findByfromEmailtoEmail(
+							profissionalRepository.findById(friends.get(0).getType()).get().getEmail(),
+							user.getUserEmail()));
+
+					Collections.sort(messages);
+
 					modelAndView.addObject("messages", messages);
-					
-				}else {
-					List<Message> messages = messageRepository.findByfromEmailtoEmail(user.getUserEmail(),pacienteRepository.findById(friends.get(0).getType()).get().getEmail());
-					messages.addAll(messageRepository.findByfromEmailtoEmail(pacienteRepository.findById(friends.get(0).getType()).get().getEmail(), user.getUserEmail()));
-					
+
+				} else {
+					List<Message> messages = messageRepository.findByfromEmailtoEmail(user.getUserEmail(),
+							pacienteRepository.findById(friends.get(0).getType()).get().getEmail());
+					messages.addAll(messageRepository.findByfromEmailtoEmail(
+							pacienteRepository.findById(friends.get(0).getType()).get().getEmail(),
+							user.getUserEmail()));
+
 					Collections.sort(messages);
 
 					modelAndView.addObject("messages", messages);
 				}
-				
-			}else {
-				List<FriendPaciente> friends = friendPacienteRepository.findAllByPaciente(pacienteRepository.findByEmail(user.getUserEmail()));
+
+			} else {
+				List<FriendPaciente> friends = friendPacienteRepository
+						.findAllByPaciente(pacienteRepository.findByEmail(user.getUserEmail()));
 				modelAndView.addObject("friends", friends);
 				modelAndView.addObject("chatFriend", friends.get(0));
 			}
@@ -302,7 +319,7 @@ public class UserController {
 		modelAndView.addObject("user", user);
 		return modelAndView;
 	}
-	
+
 //	Socket
 //	@MessageMapping("/feed")
 //	@SendTo("/topic/posts")
@@ -318,11 +335,15 @@ public class UserController {
 //	}
 
 	@PostMapping("/login")
-	public ModelAndView validarUser(String username, String password) throws ParseException, IOException {
+	public ModelAndView validarUser(String username, String password) throws ParseException, IOException, InvalidKerasConfigurationException, UnsupportedKerasConfigurationException {
 		Optional<Profissional> userFound = profissionalRepository.findByEmail(username);
 		String name = new String();
 		ModelAndView modelAndView = new ModelAndView("login");
-
+		
+//		String entrada = "A psicologia humanista é um ramo da psicologia em geral, e da psicoterapia, considerada como a terceira força, ao lado da psicanálise e da psicologia comportamental. A psicologia humanista surgiu como uma reação ao determinismo dominante nas outras práticas psicoterapêuticas, ensinando que o ser humano possui em si uma força de autorrealização, que conduz o indivíduo ao desenvolvimento de uma personalidade criativa e saudável.";
+		String fullmodel = new ClassPathResource("saved_model.h5").getFile().getPath();
+		MultiLayerNetwork model = KerasModelImport.importKerasSequentialModelAndWeights(fullmodel);
+		
 		if (userFound.isPresent()) {
 			if (new BCryptPasswordEncoder().matches(password, userFound.get().getPasswordHash())) {
 				name = userFound.get().getName() + " " + userFound.get().getLastName();
@@ -351,23 +372,24 @@ public class UserController {
 //				System.out.println(user.getId());
 				List<Friend> friends = friendRepository.findAllByProfissional(userFound);
 				modelAndView = new ModelAndView("feed");
-				
-				for (Friend friend : friendRepository.findAllByProfissional(profissionalRepository.findByEmail(user.getUserEmail()))) {
+
+				for (Friend friend : friendRepository
+						.findAllByProfissional(profissionalRepository.findByEmail(user.getUserEmail()))) {
 					Optional<Profissional> optPro = profissionalRepository.findById(friend.getFriendId());
-					
+
 					if (optPro.isPresent()) {
 						String proEmail = optPro.get().getEmail();
-						posts.addAll(postRepository.findAllByUserEmail(proEmail));					
-					}else {
+						posts.addAll(postRepository.findAllByUserEmail(proEmail));
+					} else {
 						Optional<Paciente> optPaciente = pacienteRepository.findById(friend.getFriendId());
 						if (optPaciente.isPresent()) {
 							String pacEmail = optPaciente.get().getEmail();
 							posts.addAll(postRepository.findAllByUserEmail(pacEmail));
 						}
 					}
-					
+
 				}
-				
+
 				modelAndView.addObject("posts", posts);
 				modelAndView.addObject("friends", friends);
 
@@ -377,7 +399,7 @@ public class UserController {
 //					System.out.println("Tem coisa");
 //					System.out.println(friends.get(0).getName());
 //				}
-				
+
 				return modelAndView;
 
 			} else {
@@ -408,25 +430,27 @@ public class UserController {
 
 					List<Post> posts = postRepository.findAllByUserEmail(user.getUserEmail());
 					modelAndView = new ModelAndView("feed");
-					List<FriendPaciente> friends = friendPacienteRepository.findAllByPaciente(pacienteRepository.findByEmail(user.getUserEmail()));
+					List<FriendPaciente> friends = friendPacienteRepository
+							.findAllByPaciente(pacienteRepository.findByEmail(user.getUserEmail()));
 					modelAndView.addObject("friends", friends);
-					
-					for (FriendPaciente friend : friendPacienteRepository.findAllByPaciente(pacienteRepository.findByEmail(user.getUserEmail()))) {
+
+					for (FriendPaciente friend : friendPacienteRepository
+							.findAllByPaciente(pacienteRepository.findByEmail(user.getUserEmail()))) {
 						Optional<Profissional> optPro = profissionalRepository.findById(friend.getFriendId());
-						
+
 						if (optPro.isPresent()) {
 							String proEmail = optPro.get().getEmail();
-							posts.addAll(postRepository.findAllByUserEmail(proEmail));					
-						}else {
+							posts.addAll(postRepository.findAllByUserEmail(proEmail));
+						} else {
 							Optional<Paciente> optPaciente = pacienteRepository.findById(friend.getFriendId());
 							if (optPaciente.isPresent()) {
 								String pacEmail = optPaciente.get().getEmail();
 								posts.addAll(postRepository.findAllByUserEmail(pacEmail));
 							}
 						}
-						
+
 					}
-					
+
 					modelAndView.addObject("posts", posts);
 
 					return modelAndView;
@@ -454,50 +478,52 @@ public class UserController {
 		if (user.isLogado()) {
 			List<Post> posts = postRepository.findAllByUserEmail(user.getUserEmail());
 			modelAndView = new ModelAndView("feed");
-			
+
 			if (user.getType() == 1) {
-				for (Friend friend : friendRepository.findAllByProfissional(profissionalRepository.findByEmail(user.getUserEmail()))) {
+				for (Friend friend : friendRepository
+						.findAllByProfissional(profissionalRepository.findByEmail(user.getUserEmail()))) {
 					Optional<Profissional> optPro = profissionalRepository.findById(friend.getFriendId());
-					
+
 					if (optPro.isPresent()) {
 						String proEmail = optPro.get().getEmail();
-						posts.addAll(postRepository.findAllByUserEmail(proEmail));					
-					}else {
+						posts.addAll(postRepository.findAllByUserEmail(proEmail));
+					} else {
 						Optional<Paciente> optPaciente = pacienteRepository.findById(friend.getFriendId());
 						if (optPaciente.isPresent()) {
 							String pacEmail = optPaciente.get().getEmail();
 							posts.addAll(postRepository.findAllByUserEmail(pacEmail));
 						}
 					}
-					
+
 				}
-			}else {
-				for (FriendPaciente friend : friendPacienteRepository.findAllByPaciente(pacienteRepository.findByEmail(user.getUserEmail()))) {
+			} else {
+				for (FriendPaciente friend : friendPacienteRepository
+						.findAllByPaciente(pacienteRepository.findByEmail(user.getUserEmail()))) {
 					Optional<Profissional> optPro = profissionalRepository.findById(friend.getFriendId());
-					
+
 					if (optPro.isPresent()) {
 						String proEmail = optPro.get().getEmail();
-						posts.addAll(postRepository.findAllByUserEmail(proEmail));					
-					}else {
+						posts.addAll(postRepository.findAllByUserEmail(proEmail));
+					} else {
 						Optional<Paciente> optPaciente = pacienteRepository.findById(friend.getFriendId());
 						if (optPaciente.isPresent()) {
 							String pacEmail = optPaciente.get().getEmail();
 							posts.addAll(postRepository.findAllByUserEmail(pacEmail));
 						}
 					}
-					
+
 				}
 			}
-			
-			
-			
+
 			modelAndView.addObject("posts", posts);
 
 			if (user.getType() == 1) {
-				List<Friend> friends = friendRepository.findAllByProfissional(profissionalRepository.findByEmail(user.getUserEmail()));
+				List<Friend> friends = friendRepository
+						.findAllByProfissional(profissionalRepository.findByEmail(user.getUserEmail()));
 				modelAndView.addObject("friends", friends);
-			}else {
-				List<FriendPaciente> friends = friendPacienteRepository.findAllByPaciente(pacienteRepository.findByEmail(user.getUserEmail()));
+			} else {
+				List<FriendPaciente> friends = friendPacienteRepository
+						.findAllByPaciente(pacienteRepository.findByEmail(user.getUserEmail()));
 				modelAndView.addObject("friends", friends);
 			}
 			return modelAndView;
@@ -559,7 +585,7 @@ public class UserController {
 				name = pac.get().getName() + " " + pac.get().getLastName();
 				LocalDate birthDate = LocalDate.parse(pac.get().getBirthDate());
 				Period idadeCompleta = Period.between(birthDate, LocalDate.now());
-				
+
 				temp.setId(id);
 				temp.setType(type);
 				temp.setGender(pac.get().getGender());
@@ -724,7 +750,7 @@ public class UserController {
 	public String follow(@PathVariable("id") int id, @PathVariable("type") int type) {
 		if (type == 1) {
 			Optional<Profissional> proFriend = profissionalRepository.findById(id);
-			
+
 			if (user.getType() == 1) {
 				Optional<Profissional> proFound = profissionalRepository.findByEmail(user.getUserEmail());
 				Profissional proUser = new Profissional();
@@ -760,7 +786,6 @@ public class UserController {
 				friend.setPaciente(pacUser);
 				friend.setFriendId(proFriend.get().getId());
 
-				
 				friendPacienteRepository.save(friend);
 
 //				Addicionar o cara novo na lista
@@ -770,7 +795,7 @@ public class UserController {
 			}
 		} else {
 			Optional<Paciente> proFriend = pacienteRepository.findById(id);
-			
+
 			if (user.getType() == 1) {
 				Optional<Profissional> proFound = profissionalRepository.findByEmail(user.getUserEmail());
 				Profissional proUser = new Profissional();
@@ -814,42 +839,48 @@ public class UserController {
 				pacUser.setFriendList(friendList);
 			}
 		}
-		
 
 		return "home";
 	}
-	
+
 	@RequestMapping("/chat")
 	public ModelAndView chat() {
 		ModelAndView modelAndView = new ModelAndView("chat");
-		
+
 		if (user.isLogado()) {
 			if (user.getType() == 1) {
-				List<Friend> friends = friendRepository.findAllByProfissional(profissionalRepository.findByEmail(user.getUserEmail()));
-				
-				
+				List<Friend> friends = friendRepository
+						.findAllByProfissional(profissionalRepository.findByEmail(user.getUserEmail()));
+
 				modelAndView.addObject("friends", friends);
 				modelAndView.addObject("chatFriend", friends.get(0));
-				
+
 				if (friends.get(0).getType() == 1) {
-					List<Message> messages = messageRepository.findByfromEmailtoEmail(user.getUserEmail(),profissionalRepository.findById(friends.get(0).getType()).get().getEmail());
-					messages.addAll(messageRepository.findByfromEmailtoEmail(profissionalRepository.findById(friends.get(0).getType()).get().getEmail(), user.getUserEmail()));
-					
-					Collections.sort(messages); 
-					
+					List<Message> messages = messageRepository.findByfromEmailtoEmail(user.getUserEmail(),
+							profissionalRepository.findById(friends.get(0).getType()).get().getEmail());
+					messages.addAll(messageRepository.findByfromEmailtoEmail(
+							profissionalRepository.findById(friends.get(0).getType()).get().getEmail(),
+							user.getUserEmail()));
+
+					Collections.sort(messages);
+
 					modelAndView.addObject("messages", messages);
-					
-				}else {
-					List<Message> messages = messageRepository.findByfromEmailtoEmail(user.getUserEmail(),pacienteRepository.findById(friends.get(0).getType()).get().getEmail());
-					messages.addAll(messageRepository.findByfromEmailtoEmail(pacienteRepository.findById(friends.get(0).getType()).get().getEmail(), user.getUserEmail()));
-					
+
+				} else {
+					List<Message> messages = messageRepository.findByfromEmailtoEmail(user.getUserEmail(),
+							pacienteRepository.findById(friends.get(0).getType()).get().getEmail());
+					messages.addAll(messageRepository.findByfromEmailtoEmail(
+							pacienteRepository.findById(friends.get(0).getType()).get().getEmail(),
+							user.getUserEmail()));
+
 					Collections.sort(messages);
 
 					modelAndView.addObject("messages", messages);
 				}
-				
-			}else {
-				List<FriendPaciente> friends = friendPacienteRepository.findAllByPaciente(pacienteRepository.findByEmail(user.getUserEmail()));
+
+			} else {
+				List<FriendPaciente> friends = friendPacienteRepository
+						.findAllByPaciente(pacienteRepository.findByEmail(user.getUserEmail()));
 				modelAndView.addObject("friends", friends);
 				modelAndView.addObject("chatFriend", friends.get(0));
 			}
@@ -858,42 +889,47 @@ public class UserController {
 		modelAndView.addObject("user", user);
 		return modelAndView;
 	}
-	
+
 	@RequestMapping("/chat/requestInvidualChat/{id}/{type}")
 	public ModelAndView requestInvidualChat(@PathVariable("id") int id, @PathVariable("type") int type) {
 		ModelAndView modelAndView = new ModelAndView("chat");
-		
-		
+
 		if (user.isLogado()) {
 			if (type == 1) {
-				List<Message> messages = messageRepository.findByfromEmailtoEmail(user.getUserEmail(),profissionalRepository.findById(id).get().getEmail());
-				messages.addAll(messageRepository.findByfromEmailtoEmail(profissionalRepository.findById(id).get().getEmail(), user.getUserEmail()));
-				
+				List<Message> messages = messageRepository.findByfromEmailtoEmail(user.getUserEmail(),
+						profissionalRepository.findById(id).get().getEmail());
+				messages.addAll(messageRepository.findByfromEmailtoEmail(
+						profissionalRepository.findById(id).get().getEmail(), user.getUserEmail()));
+
 				Collections.sort(messages);
 				modelAndView.addObject("messages", messages);
-				
-			}else {
-				List<Message> messages = messageRepository.findByfromEmailtoEmail(user.getUserEmail(),pacienteRepository.findById(id).get().getEmail());
-				messages.addAll(messageRepository.findByfromEmailtoEmail(pacienteRepository.findById(id).get().getEmail(), user.getUserEmail()));
-				
+
+			} else {
+				List<Message> messages = messageRepository.findByfromEmailtoEmail(user.getUserEmail(),
+						pacienteRepository.findById(id).get().getEmail());
+				messages.addAll(messageRepository
+						.findByfromEmailtoEmail(pacienteRepository.findById(id).get().getEmail(), user.getUserEmail()));
+
 				Collections.sort(messages);
 				modelAndView.addObject("messages", messages);
 			}
-			
+
 			if (user.getType() == 1) {
-				List<Friend> friends = friendRepository.findAllByProfissional(profissionalRepository.findByEmail(user.getUserEmail()));
+				List<Friend> friends = friendRepository
+						.findAllByProfissional(profissionalRepository.findByEmail(user.getUserEmail()));
 				modelAndView.addObject("friends", friends);
-				
+
 				for (Friend friend : friends) {
 					if (friend.getFriendId() == id) {
 						modelAndView.addObject("chatFriend", friend);
 					}
 				}
-				
-			}else {
-				List<FriendPaciente> friends = friendPacienteRepository.findAllByPaciente(pacienteRepository.findByEmail(user.getUserEmail()));
+
+			} else {
+				List<FriendPaciente> friends = friendPacienteRepository
+						.findAllByPaciente(pacienteRepository.findByEmail(user.getUserEmail()));
 				modelAndView.addObject("friends", friends);
-				
+
 				for (FriendPaciente friend : friends) {
 					if (friend.getFriendId() == id) {
 						modelAndView.addObject("chatFriend", friend);
@@ -905,6 +941,5 @@ public class UserController {
 		modelAndView.addObject("user", user);
 		return modelAndView;
 	}
-	
 
 }
