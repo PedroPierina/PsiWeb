@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<html xmlns:th="http://www.thymeleaf.org">
+		<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+		<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+		<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+  		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+  		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+		<meta charset="utf-8">
+        <title>PsiWeb</title>
+        <link rel="icon" type="image/x-icon" href="assets/img/favicon.ico" />
+        <link href="/css/profileStyle.css" rel="stylesheet" />
+    </head>
+    <body> 
+    	<nav class="navbar navbar-expand-lg navbar-light bg-dark">
+		  <a class="navbar-brand" href="/feed">PsiWeb</a>
+		  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+		    <span class="navbar-toggler-icon"></span>
+		  </button>
+		
+		  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+		    <ul class="navbar-nav mr-auto">
+		      <li class="nav-item active">
+		        <a class="nav-link" href="/profile">Perfil <span class="sr-only">(current)</span></a>
+		      </li>
+		      <li class="nav-item">
+		        <a class="nav-link" href="/chat">Chat</a>
+		      </li>
+		      <li class="nav-item dropdown">
+		        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+		          Conta
+		        </a>
+		        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+		          <a class="dropdown-item" href="/logout">Logout</a>
+		          <div class="dropdown-divider"></div>
+		          <a class="dropdown-item" href="#">Deletar Conta</a>
+		        </div>
+		      </li>
+		      
+		    </ul>
+		    
+		    <form class="form-inline my-2 my-lg-0" method="post" id="search" th:action="@{/search}">
+		      <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" id="search" name="search">
+		      <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+		    </form>
+		    
+		  </div>
+		</nav>
+		
+		<div class="container emp-profile">
+            
+                <div class="row">
+                    <div class="col-md-4">
+	                    <form method="post" id="form" enctype="multipart/form-data">
+	                        <div class="profile-img">
+	                            <img th:src="@{${'http://localhost:8080/view/profilePhoto/' + user.userEmail}}" alt=""/>
+	                            <div class="file btn btn-lg btn-primary">
+	                                Change Photo
+	                                <input type="file" name="file" accept="image/*" id="file"/>
+	                            </div>
+	                        </div>
+	                     </form>       
+                    </div>
+                    <div class="col-md-6">
+                        <div class="profile-head">
+                                    <!-- <p class="proile-rating">RANKINGS : <span>8/10</span></p> -->
+                                    </br>
+                                    <h5 th:text="${user.name}"></h5>
+                                    </br>
+                            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">About</a>
+                                </li>
+                                <!-- <li class="nav-item">
+                                    <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Timeline</a>
+                                </li> -->
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <input type="button" class="profile-edit-btn" name="btnAddMore" value="Edit Profile" onclick="location.href = '/editProfile'"/>
+                    </div>
+                </div>
+                <!-- <div class="row">
+                    <div class="col-md-4">
+                        <div class="profile-work">
+                            <p>WORK LINK</p>
+                            <a href="">Website Link</a><br/>
+                            <a href="">Bootsnipp Profile</a><br/>
+                            <a href="">Bootply Profile</a>
+                            <p>SKILLS</p>
+                            <a href="">Web Designer</a><br/>
+                            <a href="">Web Developer</a><br/>
+                            <a href="">WordPress</a><br/>
+                            <a href="">WooCommerce</a><br/>
+                            <a href="">PHP, .Net</a><br/>
+                        </div>
+                    </div> -->
+                    <div class="col-md-8">
+                    <div class="center">
+                        <div class="tab-content profile-tab" id="myTabContent">
+                            <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label>Name</label>
+                                            </div>
+                                            <div class="col-md-6" id="name" th:text="${user.name}"></div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label>Email</label>
+                                            </div>
+                                            <div class="col-md-6" id="email" th:text="${user.userEmail}"></div>
+                                        </div>
+                                        <!-- <div class="row">
+                                            <div class="col-md-6">
+                                                <label>Localização</label>
+                                            </div>
+                                            <div class="col-md-6" id="localizacao" th:text="${user.localizacao}"></div>
+                                        </div> -->
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label>Genero</label>
+                                            </div>
+                                            <div class="col-md-6" th:text="${user.gender}"></div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label>Idade</label>
+                                            </div>
+                                            <div class="col-md-6" th:text="${user.idade}"></div>
+                                        </div>
+                                        
+                                        
+                            </div>
+                            <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label>Experience</label>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <p>Expert</p>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label>Hourly Rate</label>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <p>10$/hr</p>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label>Total Projects</label>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <p>230</p>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label>English Level</label>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <p>Expert</p>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label>Availability</label>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <p>6 months</p>
+                                            </div>
+                                        </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <label>Your Bio</label><br/>
+                                        <p>Your detail description</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+        </div>
+		
+		<script>
+		
+		
+		document.getElementById("file").onchange = function() {
+		    document.getElementById("form").submit();
+		};
+		</script>
+		
+    </body>
+		
